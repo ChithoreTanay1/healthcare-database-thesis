@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { User, Patient, Doctor, Appointment, Feedback, TeamPulse, Goal, OneOnOne } from '@types/index'
+import type { User, Patient, Doctor, Appointment, Feedback, TeamPulse, Goal, OneOnOne } from 'src/types/index'
 
 interface AppStore {
   currentUser: User | null
