@@ -10,7 +10,7 @@ import Sidebar from '@components/Sidebar'
 import TopBar from '@components/TopBar'
 
 const App: FC = () => {
-  const { currentUser, currentPage } = useAppStore()
+  const { currentUser, currentPage, sidebarOpen } = useAppStore()
 
   if (!currentUser) {
     return <LoginPage />

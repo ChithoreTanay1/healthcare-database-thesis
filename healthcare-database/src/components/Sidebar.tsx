@@ -13,10 +13,10 @@ const Sidebar: FC = () => {
     { id: 'surveys', label: 'Surveys', icon: ClipboardList },
   ]
 
-  if (!sidebarOpen) return null
+
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-sage-900 to-sage-800 text-white shadow-lg fixed inset-y-0 left-0 z-40 overflow-y-auto">
+    <aside className={`bg-gradient-to-b from-sage-900 to-sage-800 text-white shadow-lg flex-shrink-0 overflow-y-auto transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-0'}`}>
       <div className="p-6">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-8">
