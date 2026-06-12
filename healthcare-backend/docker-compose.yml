@@ -1,0 +1,160 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # ─── Infrastructure ───────────────────────────────────────────
+  postgres-auth:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+
+  postgres-patient:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: patient_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_patient_data:/var/lib/postgresql/data
+
+  postgres-appointment:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: appointment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_appointment_data:/var/lib/postgresql/data
+
+  postgres-feedback:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: feedback_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_feedback_data:/var/lib/postgresql/data
+
+  postgres-analytics:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: analytics_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_analytics_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+  # ─── Service Discovery ────────────────────────────────────────
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+
+  # ─── API Gateway ─────────────────────────────────────────────
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - eureka-server
+      - redis
+
+  # ─── Microservices ────────────────────────────────────────────
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      DB_URL: jdbc:postgresql://postgres-auth:5432/auth_db
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - postgres-auth
+      - eureka-server
+      - redis
+
+  patient-service:
+    build: ./patient-service
+    ports:
+      - "8082:8082"
+    deploy:
+      replicas: 2   # load balancing via multiple instances
+    environment:
+      DB_URL: jdbc:postgresql://postgres-patient:5432/patient_db
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - postgres-patient
+      - eureka-server
+      - redis
+
+  appointment-service:
+    build: ./appointment-service
+    ports:
+      - "8083:8083"
+    deploy:
+      replicas: 2
+    environment:
+      DB_URL: jdbc:postgresql://postgres-appointment:5432/appointment_db
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - postgres-appointment
+      - eureka-server
+      - redis
+
+  feedback-service:
+    build: ./feedback-service
+    ports:
+      - "8084:8084"
+    environment:
+      DB_URL: jdbc:postgresql://postgres-feedback:5432/feedback_db
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - postgres-feedback
+      - eureka-server
+      - redis
+
+  analytics-service:
+    build: ./analytics-service
+    ports:
+      - "8085:8085"
+    environment:
+      DB_URL: jdbc:postgresql://postgres-analytics:5432/analytics_db
+      EUREKA_URI: http://eureka-server:8761/eureka
+      REDIS_HOST: redis
+    depends_on:
+      - postgres-analytics
+      - eureka-server
+      - redis
+
+volumes:
+  postgres_auth_data:
+  postgres_patient_data:
+  postgres_appointment_data:
+  postgres_feedback_data:
+  postgres_analytics_data:
