@@ -19,11 +19,6 @@ public class PatientService {
     private static final String CACHE_PREFIX = "patient:";
     private static final Duration CACHE_TTL = Duration.ofMinutes(30);
 
-    public PatientService(PatientRepository patientRepository, RedisTemplate<String, Object> redisTemplate) {
-        this.patientRepository = patientRepository;
-        this.redisTemplate = redisTemplate;
-    }
-
     public List<Patient> getAllPatients() {
         String key = CACHE_PREFIX + "all";
         Object cached = redisTemplate.opsForValue().get(key);

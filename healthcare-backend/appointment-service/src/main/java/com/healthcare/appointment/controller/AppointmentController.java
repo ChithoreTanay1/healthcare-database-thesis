@@ -1,7 +1,7 @@
 package com.healthcare.appointment.controller;
 
-import com.medihub.appointment.model.Appointment;
-import com.medihub.appointment.service.AppointmentService;
+import com.healthcare.appointment.model.Appointment;
+import com.healthcare.appointment.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

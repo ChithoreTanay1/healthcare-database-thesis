@@ -15,10 +15,6 @@ public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
-    public FeedbackController(FeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
-    }
-
     @GetMapping
     public ResponseEntity<List<Feedback>> getAll() {
         return ResponseEntity.ok(feedbackService.getAll());

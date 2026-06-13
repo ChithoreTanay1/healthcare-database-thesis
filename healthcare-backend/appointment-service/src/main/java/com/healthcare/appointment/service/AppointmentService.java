@@ -1,7 +1,7 @@
 package com.healthcare.appointment.service;
 
-import com.medihub.appointment.model.Appointment;
-import com.medihub.appointment.repository.AppointmentRepository;
+import com.healthcare.appointment.model.Appointment;
+import com.healthcare.appointment.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

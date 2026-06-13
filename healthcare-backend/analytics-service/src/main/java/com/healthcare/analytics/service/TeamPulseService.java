@@ -19,11 +19,6 @@ public class TeamPulseService {
     private static final String CACHE_PREFIX = "teampulse:";
     private static final Duration CACHE_TTL = Duration.ofMinutes(30);
 
-    public TeamPulseService(TeamPulseRepository teamPulseRepository, RedisTemplate<String, Object> redisTemplate) {
-        this.teamPulseRepository = teamPulseRepository;
-        this.redisTemplate = redisTemplate;
-    }
-
     public List<TeamPulse> getAll() {
         String key = CACHE_PREFIX + "all";
         Object cached = redisTemplate.opsForValue().get(key);

@@ -19,11 +19,6 @@ public class GoalService {
     private static final String CACHE_PREFIX = "goal:";
     private static final Duration CACHE_TTL = Duration.ofMinutes(30);
 
-    public GoalService(GoalRepository goalRepository, RedisTemplate<String, Object> redisTemplate) {
-        this.goalRepository = goalRepository;
-        this.redisTemplate = redisTemplate;
-    }
-
     public List<Goal> getAll() {
         String key = CACHE_PREFIX + "all";
         Object cached = redisTemplate.opsForValue().get(key);

@@ -1,6 +1,6 @@
 package com.healthcare.appointment.repository;
 
-import com.medihub.appointment.model.Appointment;
+import com.healthcare.appointment.model.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

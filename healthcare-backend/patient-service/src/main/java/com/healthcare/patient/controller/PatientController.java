@@ -15,10 +15,6 @@ public class PatientController {
 
     private final PatientService patientService;
 
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
-
     @GetMapping
     public ResponseEntity<List<Patient>> getAll() {
         return ResponseEntity.ok(patientService.getAllPatients());

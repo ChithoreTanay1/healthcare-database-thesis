@@ -18,11 +18,6 @@ public class AnalyticsController {
     private final TeamPulseService teamPulseService;
     private final GoalService goalService;
 
-    public AnalyticsController(TeamPulseService teamPulseService, GoalService goalService) {
-        this.teamPulseService = teamPulseService;
-        this.goalService = goalService;
-    }
-
     @GetMapping("/team-pulse")
     public ResponseEntity<List<TeamPulse>> getAllPulses() {
         return ResponseEntity.ok(teamPulseService.getAll());

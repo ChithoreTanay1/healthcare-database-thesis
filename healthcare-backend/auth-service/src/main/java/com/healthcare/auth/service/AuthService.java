@@ -30,12 +30,6 @@ public class AuthService {
     private static final long ACCESS_EXPIRY = 1000 * 60 * 60;       // 1 hour
     private static final long REFRESH_EXPIRY = 1000 * 60 * 60 * 24 * 7; // 7 days
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, RedisTemplate<String, String> redisTemplate) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.redisTemplate = redisTemplate;
-    }
-
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
