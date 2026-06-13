@@ -1,11 +1,11 @@
-package com.healthcare.patient;
+package com.healthcare.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PatientServiceApplication {
+public class NotificationServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(PatientServiceApplication.class, args);
+        SpringApplication.run(NotificationServiceApplication.class, args);
     }
 }
