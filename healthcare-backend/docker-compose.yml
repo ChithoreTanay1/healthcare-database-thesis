@@ -1,4 +1,3 @@
-# docker-compose.yml
 version: '3.8'
 
 services:
@@ -62,17 +61,20 @@ services:
     image: redis:7-alpine
     ports:
       - "6379:6379"
-    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
 
   # ─── Service Discovery ────────────────────────────────────────
   eureka-server:
-    build: ./eureka-server
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
     ports:
       - "8761:8761"
 
   # ─── API Gateway ─────────────────────────────────────────────
   api-gateway:
-    build: ./api-gateway
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
     ports:
       - "8080:8080"
     environment:
@@ -84,7 +86,9 @@ services:
 
   # ─── Microservices ────────────────────────────────────────────
   auth-service:
-    build: ./auth-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
     ports:
       - "8081:8081"
     environment:
@@ -97,11 +101,13 @@ services:
       - redis
 
   patient-service:
-    build: ./patient-service
+    build:
+      context: .
+      dockerfile: patient-service/Dockerfile
     ports:
       - "8082:8082"
     deploy:
-      replicas: 2   # load balancing via multiple instances
+      replicas: 2
     environment:
       DB_URL: jdbc:postgresql://postgres-patient:5432/patient_db
       EUREKA_URI: http://eureka-server:8761/eureka
@@ -112,7 +118,9 @@ services:
       - redis
 
   appointment-service:
-    build: ./appointment-service
+    build:
+      context: .
+      dockerfile: appointment-service/Dockerfile
     ports:
       - "8083:8083"
     deploy:
@@ -127,7 +135,9 @@ services:
       - redis
 
   feedback-service:
-    build: ./feedback-service
+    build:
+      context: .
+      dockerfile: feedback-service/Dockerfile
     ports:
       - "8084:8084"
     environment:
@@ -140,7 +150,9 @@ services:
       - redis
 
   analytics-service:
-    build: ./analytics-service
+    build:
+      context: .
+      dockerfile: analytics-service/Dockerfile
     ports:
       - "8085:8085"
     environment:
