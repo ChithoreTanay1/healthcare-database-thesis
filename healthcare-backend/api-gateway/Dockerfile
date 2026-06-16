@@ -4,8 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -DskipTests
-
+RUN mvn -pl api-gateway clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
 

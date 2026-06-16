@@ -4,13 +4,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean package -DskipTests
-
+RUN mvn -pl appointment-service clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-COPY api-gateway/target/*.jar app.jar
+COPY appointment-service/target/*.jar app.jar
 
 ENTRYPOINT ["java","-jar","app.jar"]
