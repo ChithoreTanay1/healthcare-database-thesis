@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import { useAppStore } from '@/store/appStore'
 import { FileText } from 'lucide-react'
+import { login } from '@/api/auth'
 
 const LoginPage: FC = () => {
   const [email, setEmail] = useState('')
@@ -8,16 +9,15 @@ const LoginPage: FC = () => {
   const [role, setRole] = useState<'admin' | 'doctor' | 'manager'>('admin')
   const { setCurrentUser, setCurrentPage } = useAppStore()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email && password) {
-      setCurrentUser({
-        id: '1',
-        email,
-        role,
-        name: email.split('@')[0],
-      })
+    try {
+      const res = await login(email, password)
+      localStorage.setItem('access_token', res.accessToken)
+      setCurrentUser({ id: '', email, role: res.role.toLowerCase() as any, name: email.split('@')[0] })
       setCurrentPage('dashboard')
+    } catch {
+      alert('Login failed')
     }
   }
 

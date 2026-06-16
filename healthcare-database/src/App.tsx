@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useAppStore } from '@/store/appStore'
 import LoginPage from '@pages/LoginPage'
 import Dashboard from '@pages/Dashboard'
@@ -10,7 +10,11 @@ import Sidebar from '@components/Sidebar'
 import TopBar from '@components/TopBar'
 
 const App: FC = () => {
-  const { currentUser, currentPage } = useAppStore()
+  const { currentUser, currentPage, loadData } = useAppStore()
+
+  useEffect(() => {
+    if (currentUser) loadData()
+  }, [currentUser])
 
   if (!currentUser) {
     return <LoginPage />

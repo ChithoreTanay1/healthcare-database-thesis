@@ -8,6 +8,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
+    /* Vite client types — fixes import.meta.env */
+    "types": ["vite/client"],
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -21,7 +24,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -31,6 +34,5 @@
       "@hooks/*": ["src/hooks/*"]
     }
   },
-  "include": ["src"],
-  
+  "include": ["src"]
 }
