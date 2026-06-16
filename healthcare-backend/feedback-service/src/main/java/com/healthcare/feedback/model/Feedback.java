@@ -19,7 +19,7 @@ public class Feedback {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -28,6 +28,6 @@ public class Feedback {
 
     @PrePersist
     public void prePersist() {
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = java.time.LocalDateTime.now().toString();
     }
 }

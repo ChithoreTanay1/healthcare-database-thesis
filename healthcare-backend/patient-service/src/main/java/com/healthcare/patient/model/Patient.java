@@ -2,7 +2,7 @@ package com.healthcare.patient.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
+
 
 @Entity
 @Table(name = "patients")
@@ -17,7 +17,7 @@ public class Patient {
     private Integer age;
     private String email;
     private String phone;
-    private LocalDate lastVisit;
+    private String lastVisit;
     private String condition;
     private String department;
 }

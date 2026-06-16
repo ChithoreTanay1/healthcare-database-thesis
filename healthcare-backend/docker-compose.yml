@@ -68,7 +68,7 @@ services:
       context: .
       dockerfile: eureka-server/Dockerfile
     ports:
-      - "8761:8761"
+      - "9761:8761"
 
   # ─── API Gateway ─────────────────────────────────────────────
   api-gateway:
@@ -76,7 +76,7 @@ services:
       context: .
       dockerfile: api-gateway/Dockerfile
     ports:
-      - "8080:8080"
+      - "9080:8080"
     environment:
       EUREKA_URI: http://eureka-server:8761/eureka
       REDIS_HOST: redis
@@ -90,7 +90,7 @@ services:
       context: .
       dockerfile: auth-service/Dockerfile
     ports:
-      - "8081:8081"
+      - "9081:8081"
     environment:
       DB_URL: jdbc:postgresql://postgres-auth:5432/auth_db
       EUREKA_URI: http://eureka-server:8761/eureka
@@ -105,9 +105,8 @@ services:
       context: .
       dockerfile: patient-service/Dockerfile
     ports:
-      - "8082:8082"
-    deploy:
-      replicas: 2
+      - "9092:8082"
+
     environment:
       DB_URL: jdbc:postgresql://postgres-patient:5432/patient_db
       EUREKA_URI: http://eureka-server:8761/eureka
@@ -122,9 +121,8 @@ services:
       context: .
       dockerfile: appointment-service/Dockerfile
     ports:
-      - "8083:8083"
-    deploy:
-      replicas: 2
+      - "9083:8083"
+
     environment:
       DB_URL: jdbc:postgresql://postgres-appointment:5432/appointment_db
       EUREKA_URI: http://eureka-server:8761/eureka
@@ -139,7 +137,7 @@ services:
       context: .
       dockerfile: feedback-service/Dockerfile
     ports:
-      - "8084:8084"
+      - "9084:8084"
     environment:
       DB_URL: jdbc:postgresql://postgres-feedback:5432/feedback_db
       EUREKA_URI: http://eureka-server:8761/eureka
@@ -154,7 +152,7 @@ services:
       context: .
       dockerfile: analytics-service/Dockerfile
     ports:
-      - "8085:8085"
+      - "9085:8085"
     environment:
       DB_URL: jdbc:postgresql://postgres-analytics:5432/analytics_db
       EUREKA_URI: http://eureka-server:8761/eureka
