@@ -3,7 +3,7 @@ import { useAppStore } from '@/store/appStore'
 import { Calendar, Users, Clock, TrendingUp } from 'lucide-react'
 
 const Dashboard: FC = () => {
-  const { appointments, patients, doctors, teamPulses, goals, setCurrentPage } = useAppStore()
+  const { appointments, patients, teamPulses, goals, setCurrentPage } = useAppStore()
 
   // ── Scroll targets ────────────────────────────────────────────────────────
   const appointmentsRef = useRef<HTMLDivElement>(null)
@@ -14,18 +14,18 @@ const Dashboard: FC = () => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const uniqueDoctors = new Set(appointments.map((a) => a.doctor)).size
+
   const stats = [
     {
       label: 'Total Patients',
       value: patients.length,
       icon: Users,
-       // navigate to patients-adjacent page
     },
     {
       label: 'Active Doctors',
-      value: doctors.filter((d) => d.available).length,
+      value: uniqueDoctors,
       icon: Users,
-      
     },
     {
       label: 'Appointments',

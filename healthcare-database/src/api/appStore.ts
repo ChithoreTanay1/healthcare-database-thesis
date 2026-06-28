@@ -37,53 +37,7 @@ interface AppStore {
   loadData: () => Promise<void>
 }
 
-const initialDoctors: Doctor[] = [
-  {
-    id: '1',
-    name: 'Dr. Sarah Chen',
-    specialty: 'Cardiology',
-    available: true,
-    team: 'Cardiology',
-  },
-  {
-    id: '2',
-    name: 'Dr. James Wilson',
-    specialty: 'Endocrinology',
-    available: true,
-    team: 'Endocrinology',
-  },
-  {
-    id: '3',
-    name: 'Dr. Lisa Anderson',
-    specialty: 'Rheumatology',
-    available: false,
-    team: 'Rheumatology',
-  },
-]
 
-const initialOneOnOnes: OneOnOne[] = [
-  {
-    id: '1',
-    employee: 'Peter Jacobs',
-    manager: 'Dr. Sarah Chen',
-    date: '2025-03-20',
-    lastMeeting: '2025-02-20',
-  },
-  {
-    id: '2',
-    employee: 'Mary Billin',
-    manager: 'Dr. Sarah Chen',
-    date: '2025-03-22',
-    lastMeeting: '2025-02-22',
-  },
-  {
-    id: '3',
-    employee: 'Andrea McBean',
-    manager: 'Dr. James Wilson',
-    date: '2025-03-25',
-    lastMeeting: '2025-02-25',
-  },
-]
 
 export const useAppStore = create<AppStore>((set, get) => ({
   // ── State ──────────────────────────────────────────────────────────────────
@@ -96,11 +50,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   appointments: [],
   patients: [],
-  doctors: initialDoctors,
+  doctors: [],
   feedbacks: [],
   teamPulses: [],
   goals: [],
-  oneOnOnes: initialOneOnOnes,
+  oneOnOnes: [],
 
   // ── Sync actions ───────────────────────────────────────────────────────────
   setCurrentUser: (user) => set({ currentUser: user }),
