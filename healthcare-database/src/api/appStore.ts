@@ -22,7 +22,6 @@ interface AppStore {
   goals: Goal[]
   oneOnOnes: OneOnOne[]
 
-  // Sync actions
   setCurrentUser: (user: User | null) => void
   setCurrentPage: (page: string) => void
   setSidebarOpen: (open: boolean) => void
@@ -31,16 +30,55 @@ interface AppStore {
   addFeedback: (feedback: Feedback) => void
   logout: () => void
 
-  // Async actions
   loginAsync: (email: string, password: string, role: string) => Promise<void>
   logoutAsync: () => Promise<void>
   loadData: () => Promise<void>
 }
 
+const initialDoctors: Doctor[] = [
+  { id: '1', name: 'Dr. Sarah Chen', specialty: 'Cardiology', available: true, team: 'Cardiology' },
+  { id: '2', name: 'Dr. James Wilson', specialty: 'Endocrinology', available: true, team: 'Endocrinology' },
+  { id: '3', name: 'Dr. Lisa Anderson', specialty: 'Rheumatology', available: false, team: 'Rheumatology' },
+]
 
+const initialOneOnOnes: OneOnOne[] = [
+  { id: '1', employee: 'Peter Jacobs', manager: 'Dr. Sarah Chen', date: '2025-03-20', lastMeeting: '2025-02-20' },
+  { id: '2', employee: 'Mary Billin', manager: 'Dr. Sarah Chen', date: '2025-03-22', lastMeeting: '2025-02-22' },
+  { id: '3', employee: 'Andrea McBean', manager: 'Dr. James Wilson', date: '2025-03-25', lastMeeting: '2025-02-25' },
+]
+
+// Normalize raw API responses to match frontend types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const normalizeAppointment = (a: any): Appointment => ({
+  id: a.id,
+  patient: a.patient ?? a.patientName ?? '',
+  doctor: a.doctor ?? a.doctorName ?? '',
+  date: a.date ?? '',
+  time: a.time ?? '',
+  type: a.type ?? 'Consultation',
+  status: (a.status ?? 'pending').toLowerCase() as Appointment['status'],
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const normalizeFeedback = (f: any): Feedback => ({
+  id: f.id,
+  author: f.author ?? 'Anonymous',
+  category: f.category ?? '',
+  content: f.content ?? f.message ?? '',
+  timestamp: f.timestamp ?? '',
+  status: (f.status ?? 'new').toLowerCase() as Feedback['status'],
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const normalizeGoal = (g: any): Goal => ({
+  id: g.id,
+  team: g.team ?? '',
+  title: g.title ?? '',
+  progress: g.progress ?? 0,
+  status: (g.status ?? 'active').toLowerCase() as Goal['status'],
+})
 
 export const useAppStore = create<AppStore>((set, get) => ({
-  // ── State ──────────────────────────────────────────────────────────────────
   currentUser: null,
   currentPage: 'login',
   sidebarOpen: true,
@@ -50,13 +88,12 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   appointments: [],
   patients: [],
-  doctors: [],
+  doctors: initialDoctors,
   feedbacks: [],
   teamPulses: [],
   goals: [],
-  oneOnOnes: [],
+  oneOnOnes: initialOneOnOnes,
 
-  // ── Sync actions ───────────────────────────────────────────────────────────
   setCurrentUser: (user) => set({ currentUser: user }),
   setCurrentPage: (page) => set({ currentPage: page }),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
@@ -80,7 +117,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
       goals: [],
     }),
 
-  // ── Async actions ──────────────────────────────────────────────────────────
   loginAsync: async (email, password, _role) => {
     set({ loading: true, error: null })
     try {
@@ -109,7 +145,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     try {
       if (token) await apiLogout(token)
     } catch {
-      // best-effort — clear state regardless
+      // best-effort
     } finally {
       localStorage.removeItem('token')
       set({
@@ -128,14 +164,20 @@ export const useAppStore = create<AppStore>((set, get) => ({
   loadData: async () => {
     set({ loading: true, error: null })
     try {
-      const [patients, feedbacks, appointments, teamPulses, goals] = await Promise.all([
+      const [rawPatients, rawFeedbacks, rawAppointments, teamPulses, rawGoals] = await Promise.all([
         getPatients(),
         getFeedbacks(),
         getAppointments(),
         getTeamPulses(),
         getGoals(),
       ])
-      set({ patients, feedbacks, appointments, teamPulses, goals })
+      set({
+        patients: rawPatients,
+        feedbacks: rawFeedbacks.map(normalizeFeedback),
+        appointments: rawAppointments.map(normalizeAppointment),
+        teamPulses,
+        goals: rawGoals.map(normalizeGoal),
+      })
     } catch (e: any) {
       set({ error: e.message ?? 'Failed to load data' })
     } finally {

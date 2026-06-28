@@ -5,7 +5,6 @@ import { Calendar, Users, Clock, TrendingUp } from 'lucide-react'
 const Dashboard: FC = () => {
   const { appointments, patients, teamPulses, goals, setCurrentPage } = useAppStore()
 
-  // ── Scroll targets ────────────────────────────────────────────────────────
   const appointmentsRef = useRef<HTMLDivElement>(null)
   const teamPulseRef = useRef<HTMLDivElement>(null)
   const goalsRef = useRef<HTMLDivElement>(null)
@@ -17,39 +16,19 @@ const Dashboard: FC = () => {
   const uniqueDoctors = new Set(appointments.map((a) => a.doctor)).size
 
   const stats = [
-    {
-      label: 'Total Patients',
-      value: patients.length,
-      icon: Users,
-    },
-    {
-      label: 'Active Doctors',
-      value: uniqueDoctors,
-      icon: Users,
-    },
-    {
-      label: 'Appointments',
-      value: appointments.length,
-      icon: Calendar,
-      onClick: () => scrollTo(appointmentsRef),
-    },
-    {
-      label: 'Goals',
-      value: goals.length,
-      icon: TrendingUp,
-      onClick: () => scrollTo(goalsRef),
-    },
+    { label: 'Total Patients', value: patients.length, icon: Users },
+    { label: 'Active Doctors', value: uniqueDoctors, icon: Users },
+    { label: 'Appointments', value: appointments.length, icon: Calendar, onClick: () => scrollTo(appointmentsRef) },
+    { label: 'Goals', value: goals.length, icon: TrendingUp, onClick: () => scrollTo(goalsRef) },
   ]
 
   return (
     <div className="p-8 space-y-8">
-      {/* Header */}
       <div className="animate-fade-in-down">
         <h1 className="text-4xl font-bold text-sage-900 mb-2">Dashboard</h1>
         <p className="text-sage-600">Welcome to your healthcare management system</p>
       </div>
 
-      {/* Stats Grid — clicking scrolls to the relevant section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-down" style={{ animationDelay: '0.1s' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon
@@ -58,7 +37,6 @@ const Dashboard: FC = () => {
               key={i}
               onClick={stat.onClick}
               className="bg-white rounded-xl border border-sage-200 p-6 card-hover text-left w-full transition-all hover:shadow-md hover:border-sage-400 focus:outline-none focus:ring-2 focus:ring-sage-600"
-              style={{ animationDelay: `${0.1 + i * 0.05}s` }}
             >
               <div className="flex items-center justify-between mb-4">
                 <Icon className="w-5 h-5 text-sage-600" />
@@ -71,7 +49,6 @@ const Dashboard: FC = () => {
         })}
       </div>
 
-      {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-down" style={{ animationDelay: '0.3s' }}>
         {/* Upcoming Appointments */}
         <div ref={appointmentsRef} className="lg:col-span-2 bg-white rounded-xl border border-sage-200 p-6 scroll-mt-8">
@@ -94,11 +71,9 @@ const Dashboard: FC = () => {
                     <p className="text-xs text-sage-600">{apt.time}</p>
                   </div>
                   <span className={`ml-4 px-2 py-1 rounded-full text-xs font-semibold ${
-                    apt.status === 'confirmed'
-                      ? 'bg-green-100 text-green-700'
-                      : apt.status === 'pending'
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-sage-100 text-sage-700'
+                    apt.status === 'confirmed' ? 'bg-green-100 text-green-700'
+                    : apt.status === 'pending' ? 'bg-yellow-100 text-yellow-700'
+                    : 'bg-sage-100 text-sage-700'
                   }`}>
                     {apt.status}
                   </span>
@@ -118,20 +93,23 @@ const Dashboard: FC = () => {
             {teamPulses.length === 0 ? (
               <p className="text-sage-500 text-sm text-center py-8">No team data</p>
             ) : (
-              teamPulses.map((pulse) => (
-                <div key={pulse.team} className="bg-sage-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-sage-900">{pulse.team}</h3>
-                    <span className="text-2xl font-bold text-sage-700">{pulse.overall.toFixed(1)}</span>
+              teamPulses.map((pulse) => {
+                const score = pulse.overall ?? 0
+                return (
+                  <div key={pulse.team} className="bg-sage-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold text-sage-900">{pulse.team}</h3>
+                      <span className="text-2xl font-bold text-sage-700">{score.toFixed(1)}</span>
+                    </div>
+                    <div className="w-full bg-sage-300 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-sage-600 to-sage-700 h-2 rounded-full"
+                        style={{ width: `${(score / 10) * 100}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full bg-sage-300 rounded-full h-2">
-                    <div
-                      className="bg-gradient-to-r from-sage-600 to-sage-700 h-2 rounded-full"
-                      style={{ width: `${(pulse.overall / 10) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              ))
+                )
+              })
             )}
           </div>
           <button
@@ -150,10 +128,7 @@ const Dashboard: FC = () => {
             <TrendingUp className="w-5 h-5 text-sage-700" />
             Active Goals
           </h2>
-          <button
-            onClick={() => setCurrentPage('goals')}
-            className="text-sm text-sage-600 hover:text-sage-900 font-medium transition-colors"
-          >
+          <button onClick={() => setCurrentPage('goals')} className="text-sm text-sage-600 hover:text-sage-900 font-medium transition-colors">
             View all →
           </button>
         </div>
@@ -175,10 +150,7 @@ const Dashboard: FC = () => {
                     <span className="font-semibold">{goal.progress}%</span>
                   </div>
                   <div className="w-full bg-sage-200 rounded-full h-2">
-                    <div
-                      className="bg-sage-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${goal.progress}%` }}
-                    />
+                    <div className="bg-sage-600 h-2 rounded-full transition-all duration-300" style={{ width: `${goal.progress}%` }} />
                   </div>
                 </div>
               </div>
